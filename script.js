@@ -16,10 +16,6 @@
 // substitua esta URL pela URL CSV correta da aba.
 //
 
-const URL_DISTRIBUIDORES =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnU51Kz93Aij3mNKNvOmzEI_z50xQSWvuf-09_J-UDucrpOwpfLEkdNkegnyO8vJ5VeSmXYRx_JyxL/pub?output=csv";
-
-
 // ======================================================
 // GOOGLE APPS SCRIPT - CAPTURA DE LEADS
 // ======================================================
