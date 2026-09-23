@@ -14,7 +14,7 @@
 // ============================================================
 
 const URL_APPS_SCRIPT =
-    "https://script.google.com/macros/s/AKfycby1ETMZOdPfmGSTYtm0uCtz0rHx2chmsNYxl7y9fDcg5DeKbRGpxTUfJVro87Mv2FfG/exec";
+    "https://script.google.com/macros/s/AKfycbzO1ELS8SG_K9hsHo3nLKm8TxOd8d6-bRfF4EpN2bFtvb9iXOVpp-7dIQ6PjM_hTF9k/exec";
 
 const WHATSAPP_FABRICA = "5519994712833";
 
