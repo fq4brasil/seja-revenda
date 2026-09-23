@@ -17,7 +17,7 @@
 //
 
 const URL_DISTRIBUIDORES =
-    "COLOCAR_URL_CSV_DISTRIBUIDORES_AQUI";
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSnU51Kz93Aij3mNKNvOmzEI_z50xQSWvuf-09_J-UDucrpOwpfLEkdNkegnyO8vJ5VeSmXYRx_JyxL/pub?output=csv";
 
 
 // ======================================================
