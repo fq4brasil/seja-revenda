@@ -1,0 +1,1273 @@
+/* ======================================================
+   FQ4 - SEJA UMA REVENDA
+   STYLE.CSS
+====================================================== */
+
+
+/* ======================================================
+   RESET
+====================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #ffffff;
+
+    color: #1b1b1b;
+
+    line-height: 1.5;
+
+    overflow-x: hidden;
+}
+
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+
+/* ======================================================
+   CONTAINER
+====================================================== */
+
+.container {
+
+    width: 100%;
+
+    max-width: 1180px;
+
+    margin: 0 auto;
+
+    padding-left: 24px;
+    padding-right: 24px;
+
+}
+
+
+/* ======================================================
+   TOPO
+====================================================== */
+
+.topo {
+
+    width: 100%;
+
+    background: #ffffff;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    position: relative;
+
+    z-index: 10;
+
+}
+
+
+.topo .container {
+
+    min-height: 88px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.logo {
+
+    width: 150px;
+
+    max-width: 80%;
+
+    height: auto;
+
+    display: block;
+
+}
+
+
+/* ======================================================
+   HERO
+====================================================== */
+
+.hero {
+
+    position: relative;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7fbff 0%,
+            #ffffff 50%,
+            #eef7ff 100%
+        );
+
+    padding:
+        70px 0 80px;
+
+    overflow: hidden;
+
+}
+
+
+/* elementos decorativos */
+
+.hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+
+    height: 420px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 90, 170, 0.06);
+
+    top: -180px;
+
+    left: -180px;
+
+}
+
+
+.hero::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+
+    height: 500px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0, 90, 170, 0.05);
+
+    bottom: -250px;
+
+    right: -200px;
+
+}
+
+
+.hero-container {
+
+    position: relative;
+
+    z-index: 2;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 480px;
+
+    gap: 70px;
+
+    align-items: center;
+
+}
+
+
+/* ======================================================
+   TEXTO HERO
+====================================================== */
+
+.hero-texto {
+
+    max-width: 620px;
+
+}
+
+
+.tag {
+
+    display: inline-block;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: #005baa;
+
+    background: #e8f3ff;
+
+    border-radius: 30px;
+
+    padding:
+        8px 16px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.hero h1 {
+
+    font-size: clamp(
+        38px,
+        5vw,
+        62px
+    );
+
+    line-height: 1.05;
+
+    font-weight: 800;
+
+    color: #1a1a1a;
+
+    margin-bottom: 24px;
+
+}
+
+
+.hero h1 strong {
+
+    display: block;
+
+    color: #005baa;
+
+}
+
+
+.hero-texto p {
+
+    font-size: 20px;
+
+    color: #555555;
+
+    max-width: 570px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.hero-texto .hero-destaque {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    color: #222222;
+
+}
+
+
+/* ======================================================
+   FORM CARD
+====================================================== */
+
+.form-card {
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    padding: 34px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, 0.12);
+
+    border:
+        1px solid #eeeeee;
+
+}
+
+
+.form-header {
+
+    margin-bottom: 28px;
+
+}
+
+
+.form-header h2 {
+
+    font-size: 25px;
+
+    line-height: 1.2;
+
+    color: #1c1c1c;
+
+    margin-bottom: 10px;
+
+}
+
+
+.form-header p {
+
+    font-size: 15px;
+
+    color: #666666;
+
+}
+
+
+/* ======================================================
+   CAMPOS
+====================================================== */
+
+.campo-form {
+
+    margin-bottom: 18px;
+
+}
+
+
+.campo-form label {
+
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #333333;
+
+    margin-bottom: 7px;
+
+}
+
+
+.campo-form input,
+.campo-form select {
+
+    width: 100%;
+
+    height: 52px;
+
+    border:
+        1px solid #d8d8d8;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    padding:
+        0 15px;
+
+    font-size: 15px;
+
+    color: #222222;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.campo-form select {
+
+    cursor: pointer;
+
+}
+
+
+.campo-form input::placeholder {
+
+    color: #999999;
+
+}
+
+
+.campo-form input:focus,
+.campo-form select:focus {
+
+    border-color: #005baa;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0, 91, 170, 0.10);
+
+}
+
+
+.campo-form select:disabled {
+
+    background: #f5f5f5;
+
+    color: #999999;
+
+    cursor: not-allowed;
+
+}
+
+
+/* ======================================================
+   BOTÃO PRINCIPAL
+====================================================== */
+
+.botao-principal {
+
+    width: 100%;
+
+    min-height: 56px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #005baa,
+            #0074d1
+        );
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+
+    padding:
+        0 18px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+    box-shadow:
+        0 8px 20px
+        rgba(0, 91, 170, 0.25);
+
+}
+
+
+.botao-principal:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 26px
+        rgba(0, 91, 170, 0.30);
+
+}
+
+
+.botao-principal:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+.botao-principal:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+}
+
+
+/* ======================================================
+   PRIVACIDADE
+====================================================== */
+
+.privacidade {
+
+    font-size: 11px;
+
+    color: #999999;
+
+    text-align: center;
+
+    margin-top: 15px;
+
+    line-height: 1.4;
+
+}
+
+
+/* ======================================================
+   BENEFÍCIOS
+====================================================== */
+
+.beneficios {
+
+    background: #ffffff;
+
+    padding:
+        85px 0;
+
+}
+
+
+.titulo-secao {
+
+    text-align: center;
+
+    max-width: 700px;
+
+    margin:
+        0 auto 50px;
+
+}
+
+
+.titulo-secao span {
+
+    display: block;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: #005baa;
+
+    margin-bottom: 12px;
+
+}
+
+
+.titulo-secao h2 {
+
+    font-size: 36px;
+
+    line-height: 1.2;
+
+    color: #202020;
+
+}
+
+
+.beneficios-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 25px;
+
+}
+
+
+.beneficio-card {
+
+    padding:
+        34px 28px;
+
+    background: #f8fafc;
+
+    border:
+        1px solid #edf0f4;
+
+    border-radius: 16px;
+
+    text-align: center;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.beneficio-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.08);
+
+}
+
+
+.icone {
+
+    width: 64px;
+
+    height: 64px;
+
+    margin:
+        0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #e9f4ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+}
+
+
+.beneficio-card h3 {
+
+    font-size: 17px;
+
+    margin-bottom: 10px;
+
+    color: #202020;
+
+}
+
+
+.beneficio-card p {
+
+    font-size: 14px;
+
+    color: #666666;
+
+}
+
+
+/* ======================================================
+   SOBRE
+====================================================== */
+
+.sobre {
+
+    background:
+        #f5f9fd;
+
+    padding:
+        85px 0;
+
+}
+
+
+.sobre-container {
+
+    display: flex;
+
+    justify-content: center;
+
+}
+
+
+.sobre-texto {
+
+    max-width: 780px;
+
+    text-align: center;
+
+}
+
+
+.sobre-texto h2 {
+
+    font-size: 40px;
+
+    line-height: 1.2;
+
+    color: #1e1e1e;
+
+    margin-bottom: 22px;
+
+}
+
+
+.sobre-texto h2 strong {
+
+    color: #005baa;
+
+}
+
+
+.sobre-texto p {
+
+    font-size: 17px;
+
+    color: #606060;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* ======================================================
+   RESULTADO
+====================================================== */
+
+.resultado {
+
+    padding:
+        0;
+
+}
+
+
+/* ======================================================
+   CARDS DE RESULTADO
+====================================================== */
+
+.resultado-card {
+
+    width: 100%;
+
+    max-width: 700px;
+
+    margin:
+        60px auto;
+
+    padding:
+        45px 35px;
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0, 0, 0, 0.10);
+
+    border:
+        1px solid #eeeeee;
+
+    text-align: center;
+
+}
+
+
+.resultado-card h2 {
+
+    font-size: 30px;
+
+    line-height: 1.2;
+
+    color: #1e1e1e;
+
+    margin-bottom: 15px;
+
+}
+
+
+.resultado-card h3 {
+
+    font-size: 22px;
+
+    color: #005baa;
+
+    margin:
+        20px 0;
+
+}
+
+
+.resultado-card p {
+
+    font-size: 16px;
+
+    color: #666666;
+
+    margin-bottom: 12px;
+
+}
+
+
+/* ======================================================
+   BOTÕES DE RESULTADO
+====================================================== */
+
+.botao-resultado {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 54px;
+
+    padding:
+        0 28px;
+
+    margin-top: 20px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.botao-resultado:hover {
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* WhatsApp */
+
+.botao-whatsapp {
+
+    background:
+        #25D366;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 211, 102, 0.25);
+
+}
+
+
+.botao-whatsapp:hover {
+
+    box-shadow:
+        0 12px 25px
+        rgba(37, 211, 102, 0.35);
+
+}
+
+
+/* ======================================================
+   LOADING
+====================================================== */
+
+.loading {
+
+    text-align: center;
+
+    padding:
+        40px 20px;
+
+}
+
+
+.loading-spinner {
+
+    width: 40px;
+
+    height: 40px;
+
+    border:
+        4px solid #e5e5e5;
+
+    border-top-color:
+        #005baa;
+
+    border-radius: 50%;
+
+    animation:
+        girar 0.8s linear infinite;
+
+    margin:
+        0 auto 20px;
+
+}
+
+
+@keyframes girar {
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* ======================================================
+   ERRO
+====================================================== */
+
+.mensagem-erro {
+
+    background:
+        #fff4f4;
+
+    border:
+        1px solid #ffd4d4;
+
+    color:
+        #a40000;
+
+    border-radius:
+        10px;
+
+    padding:
+        15px;
+
+    font-size:
+        14px;
+
+    margin-top:
+        15px;
+
+    text-align:
+        center;
+
+}
+
+
+/* ======================================================
+   RODAPÉ
+====================================================== */
+
+.rodape {
+
+    background:
+        #101820;
+
+    color:
+        #ffffff;
+
+    padding:
+        40px 0;
+
+    text-align:
+        center;
+
+}
+
+
+.logo-rodape {
+
+    width:
+        110px;
+
+    height:
+        auto;
+
+    margin-bottom:
+        15px;
+
+    filter:
+        brightness(0) invert(1);
+
+}
+
+
+.rodape p {
+
+    font-size:
+        12px;
+
+    color:
+        #aeb6bd;
+
+}
+
+
+/* ======================================================
+   RESPONSIVIDADE
+====================================================== */
+
+@media (max-width: 950px) {
+
+    .hero-container {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            45px;
+
+    }
+
+
+    .hero-texto {
+
+        max-width:
+            700px;
+
+        text-align:
+            center;
+
+        margin:
+            0 auto;
+
+    }
+
+
+    .hero-texto p {
+
+        margin-left:
+            auto;
+
+        margin-right:
+            auto;
+
+    }
+
+
+    .form-card {
+
+        width:
+            100%;
+
+        max-width:
+            520px;
+
+        margin:
+            0 auto;
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .container {
+
+        padding-left:
+            18px;
+
+        padding-right:
+            18px;
+
+    }
+
+
+    .topo .container {
+
+        min-height:
+            72px;
+
+    }
+
+
+    .logo {
+
+        width:
+            125px;
+
+    }
+
+
+    .hero {
+
+        padding:
+            45px 0 55px;
+
+    }
+
+
+    .hero h1 {
+
+        font-size:
+            40px;
+
+    }
+
+
+    .hero-texto p {
+
+        font-size:
+            17px;
+
+    }
+
+
+    .form-card {
+
+        padding:
+            25px 20px;
+
+        border-radius:
+            16px;
+
+    }
+
+
+    .form-header h2 {
+
+        font-size:
+            22px;
+
+    }
+
+
+    .beneficios {
+
+        padding:
+            60px 0;
+
+    }
+
+
+    .titulo-secao {
+
+        margin-bottom:
+            35px;
+
+    }
+
+
+    .titulo-secao h2 {
+
+        font-size:
+            29px;
+
+    }
+
+
+    .beneficios-grid {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            16px;
+
+    }
+
+
+    .beneficio-card {
+
+        padding:
+            28px 22px;
+
+    }
+
+
+    .sobre {
+
+        padding:
+            60px 0;
+
+    }
+
+
+    .sobre-texto h2 {
+
+        font-size:
+            31px;
+
+    }
+
+
+    .sobre-texto p {
+
+        font-size:
+            15px;
+
+    }
+
+
+    .resultado-card {
+
+        margin:
+            35px 18px;
+
+        padding:
+            35px 22px;
+
+    }
+
+
+    .resultado-card h2 {
+
+        font-size:
+            25px;
+
+    }
+
+
+    .botao-resultado {
+
+        width:
+            100%;
+
+    }
+
+}
+
+
+/* ======================================================
+   TELAS MUITO PEQUENAS
+====================================================== */
+
+@media (max-width: 380px) {
+
+    .hero h1 {
+
+        font-size:
+            34px;
+
+    }
+
+
+    .hero-texto p {
+
+        font-size:
+            16px;
+
+    }
+
+
+    .form-card {
+
+        padding:
+            22px 16px;
+
+    }
+
+
+    .botao-principal {
+
+        font-size:
+            13px;
+
+    }
+
+}
