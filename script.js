@@ -831,147 +831,57 @@ function estadoCorresponde(
 // BUSCAR DISTRIBUIDOR
 // ======================================================
 
-async function buscarDistribuidor(
-    estado,
-    cidade
-) {
+function buscarDistribuidor(estado, callback) {
 
-    console.log(
-        "================================="
-    );
+    const callbackName =
+        "fq4Distribuidor_" + Date.now();
 
-    console.log(
-        "BUSCANDO DISTRIBUIDOR"
-    );
+    const script = document.createElement("script");
 
-    console.log(
-        "ESTADO:",
-        estado
-    );
+    const url =
+        URL_LEADS +
+        "?acao=buscar_distribuidor" +
+        "&estado=" + encodeURIComponent(estado) +
+        "&callback=" + callbackName;
 
-    console.log(
-        "CIDADE:",
-        cidade
-    );
+    window[callbackName] = function(resposta) {
 
-    console.log(
-        "URL:",
-        URL_DISTRIBUIDORES
-    );
+        try {
 
-    console.log(
-        "================================="
-    );
+            callback(resposta);
 
+        } finally {
 
-    try {
+            delete window[callbackName];
 
-        const registros =
-            await carregarCSV(
-                URL_DISTRIBUIDORES
-            );
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
 
+        }
 
-        console.log(
-            "TOTAL DE REGISTROS:",
-            registros.length
-        );
+    };
 
+    script.src = url;
 
-        const encontrados =
-            registros.filter(
-                registro => {
+    script.onerror = function() {
 
-                    const status =
-                        campo(
-                            registro,
-                            [
-                                "STATUS"
-                            ]
-                        );
+        delete window[callbackName];
 
+        if (script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
 
-                    const estadoPlanilha =
-                        campo(
-                            registro,
-                            [
-                                "ESTADO",
-                                "UF"
-                            ]
-                        );
+        callback({
+            sucesso: false,
+            encontrado: false,
+            mensagem: "Não foi possível consultar o distribuidor."
+        });
 
+    };
 
-                    const cidadePlanilha =
-                        campo(
-                            registro,
-                            [
-                                "CIDADE",
-                                "MUNICIPIO",
-                                "MUNICÍPIO"
-                            ]
-                        );
-
-
-                    console.log(
-                        "ANALISANDO DISTRIBUIDOR:",
-                        registro
-                    );
-
-
-                    return (
-
-                        normalizar(
-                            status
-                        ) ===
-                        "ATIVO"
-
-                        &&
-
-                        estadoCorresponde(
-                            estadoPlanilha,
-                            estado
-                        )
-
-                        &&
-
-                        normalizar(
-                            cidadePlanilha
-                        ) ===
-                        normalizar(
-                            cidade
-                        )
-
-                    );
-
-                }
-            );
-
-
-        console.log(
-            "DISTRIBUIDORES ENCONTRADOS:",
-            encontrados
-        );
-
-
-        return encontrados;
-
-    }
-
-    catch (erro) {
-
-        console.error(
-            "ERRO AO BUSCAR DISTRIBUIDOR:",
-            erro
-        );
-
-
-        return [];
-
-    }
-
+    document.body.appendChild(script);
 }
-
-
 // ======================================================
 // REGISTRAR LEAD
 // ======================================================
