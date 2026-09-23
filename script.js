@@ -1,835 +1,285 @@
-// ======================================================
+// ============================================================
 // FQ4 - SEJA UMA REVENDA
-// SCRIPT.JS
-// ======================================================
+// ============================================================
+// REGRA:
+// - Estado = define o distribuidor
+// - Cidade = apenas identifica o local do interessado
+// - Distribuidor = buscado EXCLUSIVAMENTE em DISTRIBUIDORES_FQ4
+// - Cidade NÃO participa da busca do distribuidor
+// ============================================================
 
 
-// ======================================================
+// ============================================================
 // CONFIGURAÇÕES
-// ======================================================
+// ============================================================
 
-
-// URL DA ABA DISTRIBUIDORES_FQ4
-//
-// IMPORTANTE:
-// Depois que a aba estiver criada e publicada,
-// substitua esta URL pela URL CSV correta da aba.
-//
-
-// ======================================================
-// GOOGLE APPS SCRIPT - CAPTURA DE LEADS
-// ======================================================
-
-const URL_LEADS =
+const URL_APPS_SCRIPT =
     "https://script.google.com/macros/s/AKfycby1ETMZOdPfmGSTYtm0uCtz0rHx2chmsNYxl7y9fDcg5DeKbRGpxTUfJVro87Mv2FfG/exec";
 
-
-// ======================================================
-// WHATSAPP DA FÁBRICA FQ4
-// ======================================================
-
-const WHATSAPP_FABRICA =
-    "5519994712833";
+const WHATSAPP_FABRICA = "5519994712833";
 
 
-// ======================================================
-// API IBGE
-// ======================================================
-
-const URL_IBGE =
-    "https://servicodados.ibge.gov.br/api/v1/localidades/estados";
-
-
-// ======================================================
+// ============================================================
 // ELEMENTOS DA PÁGINA
-// ======================================================
+// ============================================================
 
-const estadoSelect =
-    document.getElementById("estado");
-
-const cidadeSelect =
-    document.getElementById("cidade");
-
-const whatsappInput =
-    document.getElementById("whatsapp");
-
-const botaoEnviar =
-    document.getElementById("botaoEnviar");
-
-const resultado =
-    document.getElementById("resultado");
+const campoEstado = document.getElementById("estado");
+const campoCidade = document.getElementById("cidade");
+const campoWhatsapp = document.getElementById("whatsapp");
+const botaoEnviar = document.getElementById("botaoEnviar");
+const resultado = document.getElementById("resultado");
 
 
-// ======================================================
-// LISTA DE ESTADOS
-// ======================================================
+// ============================================================
+// ESTADOS DO BRASIL
+// ============================================================
 
 const estados = [
-
-    ["AC", "Acre"],
-    ["AL", "Alagoas"],
-    ["AP", "Amapá"],
-    ["AM", "Amazonas"],
-    ["BA", "Bahia"],
-    ["CE", "Ceará"],
-    ["DF", "Distrito Federal"],
-    ["ES", "Espírito Santo"],
-    ["GO", "Goiás"],
-    ["MA", "Maranhão"],
-    ["MT", "Mato Grosso"],
-    ["MS", "Mato Grosso do Sul"],
-    ["MG", "Minas Gerais"],
-    ["PA", "Pará"],
-    ["PB", "Paraíba"],
-    ["PR", "Paraná"],
-    ["PE", "Pernambuco"],
-    ["PI", "Piauí"],
-    ["RJ", "Rio de Janeiro"],
-    ["RN", "Rio Grande do Norte"],
-    ["RS", "Rio Grande do Sul"],
-    ["RO", "Rondônia"],
-    ["RR", "Roraima"],
-    ["SC", "Santa Catarina"],
-    ["SP", "São Paulo"],
-    ["SE", "Sergipe"],
-    ["TO", "Tocantins"]
-
+    { uf: "AC", nome: "Acre" },
+    { uf: "AL", nome: "Alagoas" },
+    { uf: "AP", nome: "Amapá" },
+    { uf: "AM", nome: "Amazonas" },
+    { uf: "BA", nome: "Bahia" },
+    { uf: "CE", nome: "Ceará" },
+    { uf: "DF", nome: "Distrito Federal" },
+    { uf: "ES", nome: "Espírito Santo" },
+    { uf: "GO", nome: "Goiás" },
+    { uf: "MA", nome: "Maranhão" },
+    { uf: "MT", nome: "Mato Grosso" },
+    { uf: "MS", nome: "Mato Grosso do Sul" },
+    { uf: "MG", nome: "Minas Gerais" },
+    { uf: "PA", nome: "Pará" },
+    { uf: "PB", nome: "Paraíba" },
+    { uf: "PR", nome: "Paraná" },
+    { uf: "PE", nome: "Pernambuco" },
+    { uf: "PI", nome: "Piauí" },
+    { uf: "RJ", nome: "Rio de Janeiro" },
+    { uf: "RN", nome: "Rio Grande do Norte" },
+    { uf: "RS", nome: "Rio Grande do Sul" },
+    { uf: "RO", nome: "Rondônia" },
+    { uf: "RR", nome: "Roraima" },
+    { uf: "SC", nome: "Santa Catarina" },
+    { uf: "SP", nome: "São Paulo" },
+    { uf: "SE", nome: "Sergipe" },
+    { uf: "TO", nome: "Tocantins" }
 ];
 
 
-let cidades = {};
-
-
-// ======================================================
-// NORMALIZAÇÃO
-// ======================================================
+// ============================================================
+// NORMALIZAÇÃO DE TEXTO
+// ============================================================
 
 function normalizar(texto) {
 
     return String(texto || "")
-        .replace(/^\uFEFF/, "")
-        .normalize("NFD")
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
-        )
-        .replace(
-            /\s+/g,
-            " "
-        )
         .trim()
-        .toUpperCase();
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 
 }
 
 
-// ======================================================
+// ============================================================
 // CARREGAR ESTADOS
-// ======================================================
+// ============================================================
 
 function carregarEstados() {
 
-    estados.forEach(
-        ([sigla, nome]) => {
+    if (!campoEstado) return;
 
-            const option =
-                document.createElement("option");
+    campoEstado.innerHTML =
+        '<option value="">Selecione seu estado</option>';
 
-            option.value =
-                sigla;
+    estados.forEach(function (estado) {
 
-            option.textContent =
-                `${nome} (${sigla})`;
+        const option = document.createElement("option");
 
-            estadoSelect.appendChild(
-                option
-            );
+        option.value = estado.uf;
+        option.textContent =
+            estado.nome + " (" + estado.uf + ")";
 
-        }
-    );
+        campoEstado.appendChild(option);
+
+    });
 
 }
 
 
-// ======================================================
-// CARREGAR CIDADES
-// ======================================================
+// ============================================================
+// CARREGAR CIDADES PELO IBGE
+// ============================================================
 
-async function carregarCidades(
-    uf
-) {
+async function carregarCidades(uf) {
 
-    cidadeSelect.innerHTML =
+    if (!campoCidade) return;
+
+    campoCidade.disabled = true;
+
+    campoCidade.innerHTML =
         '<option value="">Carregando cidades...</option>';
 
-    cidadeSelect.disabled =
-        true;
+    if (!uf) {
 
-
-    if (
-        cidades[uf]
-    ) {
-
-        preencherCidades(
-            cidades[uf]
-        );
+        campoCidade.innerHTML =
+            '<option value="">Primeiro selecione o estado</option>';
 
         return;
 
     }
 
-
     try {
 
-        const resposta =
-            await fetch(
-                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
-            );
+        const resposta = await fetch(
+            "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" +
+            encodeURIComponent(uf) +
+            "/municipios?orderBy=nome"
+        );
 
-
-        if (
-            !resposta.ok
-        ) {
-
-            throw new Error(
-                "Erro ao consultar cidades."
-            );
-
+        if (!resposta.ok) {
+            throw new Error("Erro ao carregar cidades.");
         }
 
+        const cidades = await resposta.json();
 
-        const dados =
-            await resposta.json();
+        preencherCidades(cidades);
 
+    } catch (erro) {
 
-        cidades[uf] =
-            dados
-                .map(
-                    item =>
-                        item.nome
-                )
-                .sort(
-                    (a, b) =>
-                        a.localeCompare(
-                            b,
-                            "pt-BR"
-                        )
-                );
+        console.error("Erro ao carregar cidades:", erro);
 
-
-        preencherCidades(
-            cidades[uf]
-        );
-
-    }
-
-    catch (erro) {
-
-        console.error(
-            "Erro ao carregar cidades:",
-            erro
-        );
-
-
-        cidadeSelect.innerHTML =
+        campoCidade.innerHTML =
             '<option value="">Erro ao carregar cidades</option>';
 
-        cidadeSelect.disabled =
-            true;
+        campoCidade.disabled = true;
 
     }
 
 }
 
 
-// ======================================================
+// ============================================================
 // PREENCHER CIDADES
-// ======================================================
+// ============================================================
 
-function preencherCidades(
-    lista
-) {
+function preencherCidades(cidades) {
 
-    cidadeSelect.innerHTML =
+    campoCidade.innerHTML =
         '<option value="">Selecione sua cidade</option>';
 
+    cidades.forEach(function (cidade) {
 
-    lista.forEach(
-        cidade => {
+        const option = document.createElement("option");
 
-            const option =
-                document.createElement("option");
+        option.value = cidade.nome;
+        option.textContent = cidade.nome;
 
-            option.value =
-                cidade;
+        campoCidade.appendChild(option);
 
-            option.textContent =
-                cidade;
+    });
 
-            cidadeSelect.appendChild(
-                option
-            );
-
-        }
-    );
-
-
-    cidadeSelect.disabled =
-        false;
+    campoCidade.disabled = false;
 
 }
 
 
-// ======================================================
-// EVENTO ESTADO
-// ======================================================
+// ============================================================
+// EVENTO - ESTADO
+// ============================================================
 
-estadoSelect.addEventListener(
-    "change",
-    async function() {
+if (campoEstado) {
 
-        resultado.innerHTML =
-            "";
+    campoEstado.addEventListener("change", function () {
 
+        const uf = this.value;
 
-        cidadeSelect.innerHTML =
-            '<option value="">Selecione sua cidade</option>';
+        carregarCidades(uf);
 
-        cidadeSelect.disabled =
-            true;
-
-
-        if (
-            !this.value
-        ) {
-
-            cidadeSelect.innerHTML =
-                '<option value="">Primeiro selecione o estado</option>';
-
-            return;
-
-        }
-
-
-        await carregarCidades(
-            this.value
-        );
-
-    }
-);
-
-
-// ======================================================
-// MÁSCARA WHATSAPP
-// ======================================================
-
-whatsappInput.addEventListener(
-    "input",
-    function() {
-
-        let valor =
-            this.value.replace(
-                /\D/g,
-                ""
-            );
-
-
-        if (
-            valor.length > 11
-        ) {
-
-            valor =
-                valor.substring(
-                    0,
-                    11
-                );
-
-        }
-
-
-        if (
-            valor.length <= 10
-        ) {
-
-            valor =
-                valor.replace(
-                    /^(\d{2})(\d)/,
-                    "($1) $2"
-                );
-
-            valor =
-                valor.replace(
-                    /(\d{4})(\d)/,
-                    "$1-$2"
-                );
-
-        }
-
-        else {
-
-            valor =
-                valor.replace(
-                    /^(\d{2})(\d)/,
-                    "($1) $2"
-                );
-
-            valor =
-                valor.replace(
-                    /(\d{5})(\d)/,
-                    "$1-$2"
-                );
-
-        }
-
-
-        this.value =
-            valor;
-
-    }
-);
-
-
-// ======================================================
-// PEGAR NÚMERO LIMPO DO WHATSAPP
-// ======================================================
-
-function limparTelefone(
-    telefone
-) {
-
-    let numero =
-        String(
-            telefone || ""
-        ).replace(
-            /\D/g,
-            ""
-        );
-
-
-    if (
-        numero.startsWith("55")
-    ) {
-
-        return numero;
-
-    }
-
-
-    return "55" + numero;
+    });
 
 }
 
 
-// ======================================================
+// ============================================================
+// MÁSCARA DE WHATSAPP
+// ============================================================
+
+if (campoWhatsapp) {
+
+    campoWhatsapp.addEventListener("input", function () {
+
+        let valor = this.value.replace(/\D/g, "");
+
+        if (valor.length > 11) {
+            valor = valor.substring(0, 11);
+        }
+
+        if (valor.length <= 10) {
+
+            valor = valor.replace(
+                /^(\d{2})(\d{4})(\d{0,4}).*/,
+                "($1) $2-$3"
+            );
+
+        } else {
+
+            valor = valor.replace(
+                /^(\d{2})(\d{5})(\d{0,4}).*/,
+                "($1) $2-$3"
+            );
+
+        }
+
+        this.value = valor;
+
+    });
+
+}
+
+
+// ============================================================
+// LIMPAR TELEFONE
+// ============================================================
+
+function limparTelefone(numero) {
+
+    return String(numero || "")
+        .replace(/\D/g, "");
+
+}
+
+
+// ============================================================
 // VALIDAR WHATSAPP
-// ======================================================
+// ============================================================
 
-function telefoneValido(
-    telefone
-) {
+function telefoneValido(numero) {
 
-    const numero =
-        String(
-            telefone || ""
-        ).replace(
-            /\D/g,
-            ""
-        );
+    const telefone = limparTelefone(numero);
 
-
-    return (
-        numero.length === 10 ||
-        numero.length === 11
-    );
+    return telefone.length === 10 ||
+           telefone.length === 11;
 
 }
 
 
-// ======================================================
-// LEITURA DE CSV
-// ======================================================
-
-function parseCSV(
-    texto
-) {
-
-    const linhas = [];
-
-    let linha = [];
-
-    let campoAtual = "";
-
-    let dentroAspas = false;
-
-
-    for (
-        let i = 0;
-        i < texto.length;
-        i++
-    ) {
-
-        const caractere =
-            texto[i];
-
-        const proximo =
-            texto[i + 1];
-
-
-        if (
-            caractere === '"' &&
-            dentroAspas &&
-            proximo === '"'
-        ) {
-
-            campoAtual += '"';
-
-            i++;
-
-        }
-
-
-        else if (
-            caractere === '"'
-        ) {
-
-            dentroAspas =
-                !dentroAspas;
-
-        }
-
-
-        else if (
-            caractere === "," &&
-            !dentroAspas
-        ) {
-
-            linha.push(
-                campoAtual
-            );
-
-            campoAtual =
-                "";
-
-        }
-
-
-        else if (
-            (
-                caractere === "\n" ||
-                caractere === "\r"
-            ) &&
-            !dentroAspas
-        ) {
-
-            if (
-                caractere === "\r" &&
-                proximo === "\n"
-            ) {
-
-                i++;
-
-            }
-
-
-            linha.push(
-                campoAtual
-            );
-
-            campoAtual =
-                "";
-
-
-            if (
-                linha.some(
-                    valor =>
-                        valor.trim() !== ""
-                )
-            ) {
-
-                linhas.push(
-                    linha
-                );
-
-            }
-
-
-            linha = [];
-
-        }
-
-
-        else {
-
-            campoAtual +=
-                caractere;
-
-        }
-
-    }
-
-
-    if (
-        campoAtual !== "" ||
-        linha.length > 0
-    ) {
-
-        linha.push(
-            campoAtual
-        );
-
-
-        if (
-            linha.some(
-                valor =>
-                    valor.trim() !== ""
-            )
-        ) {
-
-            linhas.push(
-                linha
-            );
-
-        }
-
-    }
-
-
-    return linhas;
-
-}
-
-
-// ======================================================
-// CONVERTER CSV
-// ======================================================
-
-function converterCSV(
-    texto
-) {
-
-    const linhas =
-        parseCSV(
-            texto
-        );
-
-
-    if (
-        !linhas.length
-    ) {
-
-        return [];
-
-    }
-
-
-    const cabecalho =
-        linhas[0].map(
-            coluna =>
-                normalizar(
-                    coluna
-                )
-        );
-
-
-    console.log(
-        "CABEÇALHO DISTRIBUIDORES:",
-        cabecalho
-    );
-
-
-    return linhas
-        .slice(1)
-        .map(
-            linha => {
-
-                const registro =
-                    {};
-
-
-                cabecalho.forEach(
-                    (
-                        coluna,
-                        indice
-                    ) => {
-
-                        registro[coluna] =
-                            (
-                                linha[indice] ||
-                                ""
-                            ).trim();
-
-                    }
-                );
-
-
-                return registro;
-
-            }
-        );
-
-}
-
-
-// ======================================================
-// CARREGAR CSV
-// ======================================================
-
-async function carregarCSV(
-    url
-) {
-
-    try {
-
-        const resposta =
-            await fetch(
-                `${url}&_=${Date.now()}`
-            );
-
-
-        if (
-            !resposta.ok
-        ) {
-
-            throw new Error(
-                "Não foi possível acessar a planilha."
-            );
-
-        }
-
-
-        const texto =
-            await resposta.text();
-
-
-        console.log(
-            "CSV DISTRIBUIDORES:",
-            texto.substring(
-                0,
-                500
-            )
-        );
-
-
-        return converterCSV(
-            texto
-        );
-
-    }
-
-    catch (erro) {
-
-        console.error(
-            "ERRO AO CARREGAR DISTRIBUIDORES:",
-            erro
-        );
-
-
-        return [];
-
-    }
-
-}
-
-
-// ======================================================
-// LOCALIZAR CAMPO
-// ======================================================
-
-function campo(
-    registro,
-    nomes
-) {
-
-    for (
-        const nome of nomes
-    ) {
-
-        const chave =
-            normalizar(
-                nome
-            );
-
-
-        if (
-            Object.prototype.hasOwnProperty.call(
-                registro,
-                chave
-            )
-        ) {
-
-            return registro[chave];
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-// ======================================================
-// VERIFICAR ESTADO
-// ======================================================
-
-function estadoCorresponde(
-    valor,
-    uf
-) {
-
-    const valorNormalizado =
-        normalizar(
-            valor
-        );
-
-
-    const estado =
-        estados.find(
-            item =>
-                item[0] === uf
-        );
-
-
-    if (
-        !estado
-    ) {
-
-        return false;
-
-    }
-
-
-    const sigla =
-        normalizar(
-            estado[0]
-        );
-
-
-    const nome =
-        normalizar(
-            estado[1]
-        );
-
-
-    return (
-
-        valorNormalizado ===
-        sigla
-
-        ||
-
-        valorNormalizado ===
-        nome
-
-    );
-
-}
-
-
-// ======================================================
-// BUSCAR DISTRIBUIDOR
-// ======================================================
+// ============================================================
+// CONSULTAR DISTRIBUIDOR
+// ============================================================
+//
+// ATENÇÃO:
+//
+// Esta função NÃO consulta:
+// - REVENDA
+// - cidades de distribuidores
+// - CSV
+//
+// Ela consulta exclusivamente:
+// DISTRIBUIDORES_FQ4
+//
+// E utiliza somente o ESTADO.
+//
+// ============================================================
 
 function buscarDistribuidor(estado, callback) {
 
@@ -839,16 +289,29 @@ function buscarDistribuidor(estado, callback) {
     const script = document.createElement("script");
 
     const url =
-        URL_LEADS +
+        URL_APPS_SCRIPT +
         "?acao=buscar_distribuidor" +
         "&estado=" + encodeURIComponent(estado) +
-        "&callback=" + callbackName;
+        "&callback=" + encodeURIComponent(callbackName);
 
-    window[callbackName] = function(resposta) {
+    window[callbackName] = function (resposta) {
 
         try {
 
             callback(resposta);
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao processar resposta do distribuidor:",
+                erro
+            );
+
+            callback({
+                sucesso: false,
+                encontrado: false,
+                mensagem: "Erro ao processar a consulta."
+            });
 
         } finally {
 
@@ -862,9 +325,15 @@ function buscarDistribuidor(estado, callback) {
 
     };
 
+
     script.src = url;
 
-    script.onerror = function() {
+
+    script.onerror = function () {
+
+        console.error(
+            "Não foi possível consultar o Apps Script."
+        );
 
         delete window[callbackName];
 
@@ -875,194 +344,175 @@ function buscarDistribuidor(estado, callback) {
         callback({
             sucesso: false,
             encontrado: false,
-            mensagem: "Não foi possível consultar o distribuidor."
+            mensagem:
+                "Não foi possível consultar o distribuidor."
         });
 
     };
 
-    document.body.appendChild(script);
-}
-// ======================================================
-// REGISTRAR LEAD
-// ======================================================
 
-async function registrarLead(
-    dados
+    document.body.appendChild(script);
+
+}
+
+
+// ============================================================
+// REGISTRAR LEAD
+// ============================================================
+//
+// Os dados são gravados em LEADS_REVENDA.
+//
+// IMPORTANTE:
+// A cidade é registrada aqui,
+// mas NÃO é utilizada para localizar o distribuidor.
+//
+// ============================================================
+
+function registrarLead(
+    estado,
+    cidade,
+    whatsapp,
+    destino,
+    distribuidor
 ) {
 
-    try {
+    const dados = new URLSearchParams();
 
-        const formulario =
-            new URLSearchParams();
-
-
-        formulario.append(
-            "tipo",
-            "REVENDA"
-        );
+    dados.append("tipo", "REVENDA");
+    dados.append("estado", estado || "");
+    dados.append("cidade", cidade || "");
+    dados.append("whatsapp", limparTelefone(whatsapp));
+    dados.append("destino", destino || "");
+    dados.append("distribuidor", distribuidor || "");
 
 
-        formulario.append(
-            "estado",
-            dados.estado || ""
-        );
+    fetch(URL_APPS_SCRIPT, {
 
+        method: "POST",
 
-        formulario.append(
-            "cidade",
-            dados.cidade || ""
-        );
+        body: dados,
 
+        mode: "no-cors"
 
-        formulario.append(
-            "whatsapp",
-            dados.whatsapp || ""
-        );
-
-
-        formulario.append(
-            "destino",
-            dados.destino || ""
-        );
-
-
-        formulario.append(
-            "distribuidor",
-            dados.distribuidor || ""
-        );
-
-
-        await fetch(
-            URL_LEADS,
-            {
-
-                method:
-                    "POST",
-
-                mode:
-                    "no-cors",
-
-                headers: {
-
-                    "Content-Type":
-                        "application/x-www-form-urlencoded"
-
-                },
-
-                body:
-                    formulario.toString()
-
-            }
-        );
-
-
-        console.log(
-            "LEAD DE REVENDA REGISTRADO:",
-            dados
-        );
-
-    }
-
-    catch (erro) {
+    }).catch(function (erro) {
 
         console.error(
-            "ERRO AO REGISTRAR LEAD:",
+            "Erro ao registrar lead:",
             erro
         );
 
-    }
+    });
 
 }
 
 
-// ======================================================
+// ============================================================
+// MOSTRAR CARREGANDO
+// ============================================================
+
+function mostrarCarregando() {
+
+    if (!resultado) return;
+
+    resultado.innerHTML = `
+        <div class="resultado-card carregando">
+
+            <div class="spinner"></div>
+
+            <h3>LOCALIZANDO ATENDIMENTO</h3>
+
+            <p>
+                Estamos encontrando o responsável
+                pelo atendimento da sua região.
+            </p>
+
+        </div>
+    `;
+
+    resultado.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// ============================================================
 // MOSTRAR DISTRIBUIDOR
-// ======================================================
+// ============================================================
 
 function mostrarDistribuidor(
-    distribuidor,
-    estado,
-    cidade,
-    telefoneLead
+    nome,
+    whatsapp
 ) {
 
-    const nome =
-        campo(
-            distribuidor,
-            [
-                "DISTRIBUIDOR"
-            ]
-        ) ||
-        "Distribuidor FQ4";
+    if (!resultado) return;
 
+    const telefone = limparTelefone(whatsapp);
 
-    const telefone =
-        campo(
-            distribuidor,
-            [
-                "WHATSAPP",
-                "TELEFONE"
-            ]
-        );
+    let linkWhatsapp = "";
 
+    if (telefone) {
 
-    const numero =
-        limparTelefone(
-            telefone
-        );
+        linkWhatsapp =
+            "https://wa.me/" +
+            telefone +
+            "?text=" +
+            encodeURIComponent(
+                "Olá! Tenho interesse em ser uma Revenda FQ4 e gostaria de conhecer as condições para trabalhar com a FQ4."
+            );
 
-
-    const mensagem =
-        `Olá! Tenho interesse em ser uma Revenda FQ4.
-
-Vim através do anúncio da FQ4.
-
-Estado: ${estado}
-Cidade: ${cidade}
-
-Meu WhatsApp:
-${telefoneLead}
-
-Gostaria de conhecer as condições para trabalhar com a FQ4.`;
-
-
-    const whatsapp =
-        `https://wa.me/${numero}?text=${encodeURIComponent(
-            mensagem
-        )}`;
+    }
 
 
     resultado.innerHTML = `
 
-        <div class="resultado-card">
+        <div class="resultado-card sucesso">
 
-            <h2>
-                Encontramos um distribuidor FQ4!
-            </h2>
-
-            <p>
-                Identificamos um distribuidor
-                que atende sua região.
-            </p>
+            <span class="resultado-tag">
+                DISTRIBUIDOR FQ4
+            </span>
 
             <h3>
-                ${nome}
+                Encontramos o responsável
+                pelo seu estado!
             </h3>
 
-            <p>
-                Fale diretamente com o distribuidor
-                para conhecer as condições para
-                trabalhar com a FQ4.
+            <p class="resultado-descricao">
+                Sua empresa será atendida pelo
+                distribuidor FQ4 responsável
+                pela sua região.
             </p>
 
-            <a
-                href="${whatsapp}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="botao-resultado botao-whatsapp"
-            >
-                FALAR COM DISTRIBUIDOR
-            </a>
+            <div class="distribuidor-box">
+
+                <strong>
+                    ${escaparHTML(nome)}
+                </strong>
+
+            </div>
+
+            ${
+                linkWhatsapp
+                ?
+                `
+                <a
+                    href="${linkWhatsapp}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="botao-whatsapp"
+                >
+                    FALAR COM DISTRIBUIDOR
+                </a>
+                `
+                :
+                `
+                <p class="mensagem-erro">
+                    O WhatsApp do distribuidor
+                    não está cadastrado.
+                </p>
+                `
+            }
 
         </div>
 
@@ -1077,65 +527,51 @@ Gostaria de conhecer as condições para trabalhar com a FQ4.`;
 }
 
 
-// ======================================================
+// ============================================================
 // MOSTRAR FÁBRICA
-// ======================================================
+// ============================================================
 
-function mostrarFabrica(
-    estado,
-    cidade,
-    telefoneLead
-) {
+function mostrarFabrica() {
 
-    const mensagem =
-        `Olá! Tenho interesse em ser uma Revenda FQ4.
+    if (!resultado) return;
 
-Vim através do anúncio da FQ4.
-
-Estado: ${estado}
-Cidade: ${cidade}
-
-Meu WhatsApp:
-${telefoneLead}
-
-Gostaria de conhecer as condições para trabalhar com a FQ4.`;
-
-
-    const whatsapp =
-        `https://wa.me/${WHATSAPP_FABRICA}?text=${encodeURIComponent(
-            mensagem
-        )}`;
+    const linkWhatsapp =
+        "https://wa.me/" +
+        WHATSAPP_FABRICA +
+        "?text=" +
+        encodeURIComponent(
+            "Olá! Tenho interesse em ser uma Revenda FQ4 e gostaria de saber como posso trabalhar com a FQ4."
+        );
 
 
     resultado.innerHTML = `
 
-        <div class="resultado-card">
+        <div class="resultado-card fabrica">
 
-            <h2>
-                Vamos conversar!
-            </h2>
+            <span class="resultado-tag">
+                FALE COM A FQ4
+            </span>
 
-            <p>
-                Recebemos seu interesse em
-                trabalhar com a FQ4.
+            <h3>
+                Vamos falar sobre sua empresa?
+            </h3>
+
+            <p class="resultado-descricao">
+                Ainda não identificamos um
+                distribuidor cadastrado para
+                o seu estado.
             </p>
 
-            <p>
-                No momento, não identificamos
-                um distribuidor cadastrado
-                para sua região.
-            </p>
-
-            <p>
-                Fale diretamente com nossa
-                equipe comercial.
+            <p class="resultado-descricao">
+                Fale diretamente com a equipe
+                comercial da FQ4.
             </p>
 
             <a
-                href="${whatsapp}"
+                href="${linkWhatsapp}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="botao-resultado botao-whatsapp"
+                class="botao-whatsapp"
             >
                 FALAR COM A FQ4
             </a>
@@ -1153,64 +589,40 @@ Gostaria de conhecer as condições para trabalhar com a FQ4.`;
 }
 
 
-// ======================================================
-// MOSTRAR CARREGANDO
-// ======================================================
-
-function mostrarCarregando() {
-
-    resultado.innerHTML = `
-
-        <div class="resultado-card loading">
-
-            <div class="loading-spinner"></div>
-
-            <h2>
-                Só um momento...
-            </h2>
-
-            <p>
-                Estamos verificando quem atende
-                sua região.
-            </p>
-
-        </div>
-
-    `;
-
-
-    resultado.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
-
-}
-
-
-// ======================================================
+// ============================================================
 // MOSTRAR ERRO
-// ======================================================
+// ============================================================
 
-function mostrarErro(
-    mensagem
-) {
+function mostrarErro(mensagem) {
+
+    if (!resultado) return;
 
     resultado.innerHTML = `
 
-        <div class="resultado-card">
+        <div class="resultado-card erro">
 
-            <h2>
-                Não conseguimos concluir
-                a consulta.
-            </h2>
+            <span class="resultado-tag">
+                ATENÇÃO
+            </span>
 
-            <div class="mensagem-erro">
-                ${mensagem}
-            </div>
+            <h3>
+                Não foi possível concluir a consulta.
+            </h3>
 
-            <p>
-                Tente novamente em alguns instantes.
+            <p class="resultado-descricao">
+                ${
+                    mensagem ||
+                    "Tente novamente em alguns instantes."
+                }
             </p>
+
+            <button
+                type="button"
+                class="botao-principal"
+                onclick="window.location.reload()"
+            >
+                TENTAR NOVAMENTE
+            </button>
 
         </div>
 
@@ -1225,231 +637,247 @@ function mostrarErro(
 }
 
 
-// ======================================================
-// CLIQUE NO BOTÃO
-// ======================================================
+// ============================================================
+// ESCAPAR HTML
+// ============================================================
+//
+// Evita que nomes vindos da planilha sejam interpretados
+// como código HTML na página.
+// ============================================================
 
-botaoEnviar.addEventListener(
-    "click",
-    async function() {
+function escaparHTML(valor) {
 
-        const estado =
-            estadoSelect.value;
+    return String(valor || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-
-        const cidade =
-            cidadeSelect.value;
-
-
-        const telefone =
-            whatsappInput.value;
-
-
-        // ==============================================
-        // VALIDAR ESTADO
-        // ==============================================
-
-        if (
-            !estado
-        ) {
-
-            alert(
-                "Selecione seu estado."
-            );
-
-            estadoSelect.focus();
-
-            return;
-
-        }
+}
 
 
-        // ==============================================
-        // VALIDAR CIDADE
-        // ==============================================
+// ============================================================
+// ENVIO DO FORMULÁRIO
+// ============================================================
 
-        if (
-            !cidade
-        ) {
+if (botaoEnviar) {
 
-            alert(
-                "Selecione sua cidade."
-            );
+    botaoEnviar.addEventListener(
+        "click",
+        function () {
 
-            cidadeSelect.focus();
+            const estado =
+                campoEstado
+                    ? campoEstado.value
+                    : "";
 
-            return;
+            const cidade =
+                campoCidade
+                    ? campoCidade.value
+                    : "";
 
-        }
-
-
-        // ==============================================
-        // VALIDAR WHATSAPP
-        // ==============================================
-
-        if (
-            !telefoneValido(
-                telefone
-            )
-        ) {
-
-            alert(
-                "Digite um WhatsApp válido."
-            );
-
-            whatsappInput.focus();
-
-            return;
-
-        }
+            const whatsapp =
+                campoWhatsapp
+                    ? campoWhatsapp.value
+                    : "";
 
 
-        // ==============================================
-        // DESABILITAR BOTÃO
-        // ==============================================
+            // -----------------------------------------------
+            // VALIDAÇÕES
+            // -----------------------------------------------
 
-        botaoEnviar.disabled =
-            true;
+            if (!estado) {
 
-        botaoEnviar.textContent =
-            "CONSULTANDO...";
+                alert(
+                    "Selecione o seu estado."
+                );
+
+                campoEstado.focus();
+
+                return;
+
+            }
 
 
-        mostrarCarregando();
+            if (!cidade) {
+
+                alert(
+                    "Selecione a sua cidade."
+                );
+
+                campoCidade.focus();
+
+                return;
+
+            }
 
 
-        try {
+            if (!telefoneValido(whatsapp)) {
 
-            // ==========================================
+                alert(
+                    "Informe um WhatsApp válido."
+                );
+
+                campoWhatsapp.focus();
+
+                return;
+
+            }
+
+
+            // -----------------------------------------------
+            // BLOQUEAR BOTÃO
+            // -----------------------------------------------
+
+            botaoEnviar.disabled = true;
+
+            botaoEnviar.dataset.textoOriginal =
+                botaoEnviar.textContent;
+
+            botaoEnviar.textContent =
+                "LOCALIZANDO...";
+
+
+            // -----------------------------------------------
+            // MOSTRAR CARREGAMENTO
+            // -----------------------------------------------
+
+            mostrarCarregando();
+
+
+            // -----------------------------------------------
             // BUSCAR DISTRIBUIDOR
-            // ==========================================
+            // -----------------------------------------------
+            //
+            // SOMENTE PELO ESTADO.
+            //
+            // A CIDADE NÃO É ENVIADA PARA A CONSULTA.
+            //
+            // -----------------------------------------------
 
-            const distribuidores =
-                await buscarDistribuidor(
-                    estado,
-                    cidade
-                );
+            buscarDistribuidor(
+                estado,
+                function (resposta) {
 
+                    // ---------------------------------------
+                    // DISTRIBUIDOR ENCONTRADO
+                    // ---------------------------------------
 
-            // ==========================================
-            // ENCONTROU DISTRIBUIDOR
-            // ==========================================
+                    if (
+                        resposta &&
+                        resposta.sucesso &&
+                        resposta.encontrado &&
+                        resposta.distribuidor
+                    ) {
 
-            if (
-                distribuidores.length > 0
-            ) {
-
-                const distribuidor =
-                    distribuidores[0];
-
-
-                const nomeDistribuidor =
-                    campo(
-                        distribuidor,
-                        [
-                            "DISTRIBUIDOR"
-                        ]
-                    );
+                        const distribuidor =
+                            resposta.distribuidor;
 
 
-                await registrarLead({
-
-                    estado:
-                        estado,
-
-                    cidade:
-                        cidade,
-
-                    whatsapp:
-                        telefone,
-
-                    destino:
-                        "DISTRIBUIDOR",
-
-                    distribuidor:
-                        nomeDistribuidor ||
-                        "Distribuidor FQ4"
-
-                });
+                        // Registrar lead
+                        registrarLead(
+                            estado,
+                            cidade,
+                            whatsapp,
+                            "DISTRIBUIDOR",
+                            distribuidor.nome
+                        );
 
 
-                mostrarDistribuidor(
-                    distribuidor,
-                    estado,
-                    cidade,
-                    telefone
-                );
-
-            }
+                        // Mostrar resultado
+                        mostrarDistribuidor(
+                            distribuidor.nome,
+                            distribuidor.whatsapp
+                        );
 
 
-            // ==========================================
-            // NÃO ENCONTROU DISTRIBUIDOR
-            // ==========================================
+                    }
 
-            else {
+                    // ---------------------------------------
+                    // NÃO ENCONTROU DISTRIBUIDOR
+                    // ---------------------------------------
 
-                await registrarLead({
+                    else if (
+                        resposta &&
+                        resposta.sucesso &&
+                        !resposta.encontrado
+                    ) {
 
-                    estado:
-                        estado,
-
-                    cidade:
-                        cidade,
-
-                    whatsapp:
-                        telefone,
-
-                    destino:
-                        "FÁBRICA",
-
-                    distribuidor:
-                        ""
-
-                });
+                        // Registrar lead
+                        registrarLead(
+                            estado,
+                            cidade,
+                            whatsapp,
+                            "FQ4",
+                            ""
+                        );
 
 
-                mostrarFabrica(
-                    estado,
-                    cidade,
-                    telefone
-                );
+                        // Direcionar para fábrica
+                        mostrarFabrica();
 
-            }
+                    }
 
-        }
+                    // ---------------------------------------
+                    // ERRO NA CONSULTA
+                    // ---------------------------------------
 
-        catch (erro) {
+                    else {
 
-            console.error(
-                "ERRO NO PROCESSAMENTO:",
-                erro
+                        console.error(
+                            "Resposta do Apps Script:",
+                            resposta
+                        );
+
+
+                        // Mesmo em caso de erro técnico,
+                        // não vamos mandar o usuário para
+                        // uma revenda.
+                        //
+                        // A alternativa é falar diretamente
+                        // com a FQ4.
+
+                        registrarLead(
+                            estado,
+                            cidade,
+                            whatsapp,
+                            "FQ4",
+                            ""
+                        );
+
+
+                        mostrarFabrica();
+
+                    }
+
+
+                    // ---------------------------------------
+                    // LIBERAR BOTÃO
+                    // ---------------------------------------
+
+                    botaoEnviar.disabled = false;
+
+                    botaoEnviar.textContent =
+                        botaoEnviar.dataset.textoOriginal ||
+                        "QUERO SER REVENDA FQ4";
+
+                }
             );
 
-
-            mostrarErro(
-                "Não foi possível consultar o distribuidor da sua região."
-            );
-
         }
+    );
+
+}
 
 
-        // ==============================================
-        // RESTAURAR BOTÃO
-        // ==============================================
-
-        botaoEnviar.disabled =
-            false;
-
-        botaoEnviar.textContent =
-            "QUERO SER REVENDA FQ4";
-
-    }
-);
-
-
-// ======================================================
+// ============================================================
 // INICIALIZAÇÃO
-// ======================================================
+// ============================================================
 
 carregarEstados();
+
+
+// ============================================================
+// FINAL
+// ============================================================
